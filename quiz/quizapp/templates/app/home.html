@@ -1,0 +1,54 @@
+{% extends "common/base.html" %}
+{% block title %}QuizApp{% endblock title %}
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        margin-top: 50px;
+    }
+    .hero-section {
+        background-color: #007bff;
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+</style>
+{% endblock extra_css %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">QuizApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/quiz/">Start Quiz</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about/">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact/">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1>Welcome to QuizApp!</h1>
+    <p>Test your knowledge and challenge yourself with fun quizzes!</p>
+    <a href="/quiz/" class="btn btn-light btn-lg">Start Quiz</a>
+</div>
+
+<!-- Footer -->
+<footer class="text-center py-4 bg-dark text-white">
+    <p>&copy; 2025 QuizApp. All rights reserved.</p>
+</footer>
+{% endblock content %}

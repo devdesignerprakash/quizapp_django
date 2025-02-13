@@ -1,0 +1,17 @@
+
+{% extends "common/base.html" %}
+{% load static %}
+{% block title %}categories{% endblock title %}
+{% block content %}
+<h1>welcome to category</h1>
+<ul>
+    {% for category in categories %}
+        {{category.category_image}}
+        <li>{{ category.name }}</li>
+        <img src={{category.category_image}} alt="category-image">
+    {% empty %}
+        <p>No categories available.</p>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

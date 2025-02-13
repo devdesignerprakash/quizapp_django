@@ -24,3 +24,7 @@ def questions_view(request,category_id):
         "total_time":total_time
     }
     return render(request, 'app/questions.html',context)
+def answer_check_view(request):
+    print("answer check *********************")
+    if request.method=="POST":
+        print("data comes from form",request.POST)

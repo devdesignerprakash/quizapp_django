@@ -46,3 +46,54 @@ class Answer(models.Model):
         return f"Answer to {self.question.text}: {self.choice.text}"
 
 # Create your models here.
+
+
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Question, Choice, Answer
+
+def answer_check_view(request):
+    if request.method == "POST":
+        print("Answer check *********************")
+
+        user_answers = request.POST  # Dictionary of submitted answers
+        correct_count = 0  # Track correct answers
+        total_questions = 0
+        results = []  # Store results per question
+
+        for key, value in user_answers.items():
+            if key.startswith("question_"):  # Ensure processing only question-related data
+                question_id = key.split("_")[1]  # Extract question ID
+                selected_choice_id = value  # User's selected choice
+                
+                question = get_object_or_404(Question, id=question_id)
+                selected_choice = get_object_or_404(Choice, id=selected_choice_id)
+                correct_answer = get_object_or_404(Answer, question=question)
+
+                is_correct = selected_choice == correct_answer.correct_choice  # Compare user choice with stored answer
+
+                if is_correct:
+                    correct_count += 1
+                
+                total_questions += 1
+                
+                # Store result for response
+                results.append({
+                    "question": question.text,
+                    "selected_answer": selected_choice.text,
+                    "correct_answer": correct_answer.correct_choice.text,
+                    "is_correct": is_correct
+                })
+
+        # Calculate percentage
+        score_percentage = (correct_count / total_questions) * 100 if total_questions else 0
+
+        # Return JSON response with results
+        return JsonResponse({
+            "score": correct_count,
+            "total": total_questions,
+            "percentage": score_percentage,
+            "results": results
+        })
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

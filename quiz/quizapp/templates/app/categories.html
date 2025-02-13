@@ -8,7 +8,7 @@
     {% for category in categories %}
         {{category.category_image}}
         <li>{{ category.name }}</li>
-        <img src={{category.category_image}} alt="category-image">
+        <img src={{category.category_image.url}} alt="category-image">
     {% empty %}
         <p>No categories available.</p>
     {% endfor %}

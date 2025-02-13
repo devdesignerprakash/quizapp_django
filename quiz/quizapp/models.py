@@ -17,7 +17,7 @@ class Category(models.Model):
 class Question(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     text = models.TextField()
-    category = models.ForeignKey(Category, related_name='questions', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='questions',null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

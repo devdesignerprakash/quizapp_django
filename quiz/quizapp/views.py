@@ -27,4 +27,5 @@ def questions_view(request,category_id):
 def answer_check_view(request):
     print("answer check *********************")
     if request.method=="POST":
-        print("data comes from form",request.POST)
+       user_answers= request.POST
+       

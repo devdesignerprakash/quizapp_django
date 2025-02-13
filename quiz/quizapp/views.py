@@ -27,8 +27,6 @@ def questions_view(request,category_id):
     return render(request, 'app/questions.html',context)
 
 def result_check_view(request):
-    print("Answer check *********************")
-    
     if request.method == "POST":
         user_answers = request.POST
         correct_count = 0
@@ -41,7 +39,7 @@ def result_check_view(request):
                     question_id = uuid.UUID(key_parts[1])  # Convert to UUID
                 except ValueError:
                     print(f"Invalid UUID format for question_id: {key_parts[1]}")
-                    continue  # Skip to the next question
+                    continue  
 
                 selected_choice_id = value
                 question = get_object_or_404(Question, id=question_id)
@@ -61,17 +59,12 @@ def result_check_view(request):
                     "correct_answer": correct_answer.choice,
                     "is_correct": is_correct
                 })
-
-        # Avoid division by zero
-        score_percentage = (correct_count / total_questions * 100) if total_questions else 0
+        score_percentage = (correct_count * 10) if total_questions else 0
         
         context = {
             "results": results,
             "score": score_percentage,
             "total_questions_attempt":total_questions
         }
-        print("**************",results)
-        
         return render(request, 'app/result.html', context)
-
-    return render(request, 'app/result.html', {"result": [], "score": 0})
+    return render(request, 'app/result.html')

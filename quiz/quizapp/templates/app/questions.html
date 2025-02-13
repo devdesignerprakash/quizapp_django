@@ -3,7 +3,6 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Quiz for {{ category.name }}</h2>
-
     {% if questions %}
     <form id="quiz-form" method="POST" action="{% url 'result_check' %}">
         {% csrf_token %}
@@ -35,7 +34,6 @@
             {% endfor %}
         </div>
     </form>
-
     <!-- Navigation Buttons -->
     <div class="d-flex justify-content-between mt-4">
         <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>

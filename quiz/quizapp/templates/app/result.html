@@ -1,16 +1,16 @@
 {% extends "common/base.html" %}
-{% block title %}Answers{% endblock title %}
+{% block title %}Result{% endblock title %}
 {% block content %}
 <div class="container mt-4">
     <h2 class="text-center">Quiz Results</h2>
     <div class="card p-3 mb-3">
-        <h4>Total Score: <span class="text-primary">{{ score }}%</span></h4>
+        <h4>Total Score: <span class="text-primary">{{ score }}</span></h4>
         <h5>Total Questions Attempted: <span class="text-secondary">{{ total_questions_attempt }}</span></h5>
     </div>
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>#</th>
+                <th>S.N.</th>
                 <th>Question</th>
                 <th>Selected Answer</th>
                 <th>Correct Answer</th>

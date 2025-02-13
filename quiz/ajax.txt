@@ -1,0 +1,25 @@
+<script>
+    document.getElementById("submit-btn").addEventListener("click", function() {
+        let formData = new FormData();
+    
+        // Collect all selected answers
+        document.querySelectorAll("input[type=radio]:checked").forEach(input => {
+            formData.append(input.name, input.value);
+        });
+    
+        // Send the data via Fetch API
+        fetch("{% url 'result_check' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"  // Ensure CSRF token is included
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Results:", data);
+            alert(`Your Score: ${data.score}/${data.total} (${data.percentage}%)`);
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    </script>

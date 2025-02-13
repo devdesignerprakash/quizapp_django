@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from .models import*
+import uuid
 
 def home_view(request):
     return render(request,'app/home.html')
@@ -24,8 +25,53 @@ def questions_view(request,category_id):
         "total_time":total_time
     }
     return render(request, 'app/questions.html',context)
-def answer_check_view(request):
-    print("answer check *********************")
-    if request.method=="POST":
-       user_answers= request.POST
-       
+
+def result_check_view(request):
+    print("Answer check *********************")
+    
+    if request.method == "POST":
+        user_answers = request.POST
+        correct_count = 0
+        total_questions = 0
+        results = []
+        for key, value in user_answers.items():
+            key_parts = key.split("_")
+            if len(key_parts) > 1:
+                try:
+                    question_id = uuid.UUID(key_parts[1])  # Convert to UUID
+                except ValueError:
+                    print(f"Invalid UUID format for question_id: {key_parts[1]}")
+                    continue  # Skip to the next question
+
+                selected_choice_id = value
+                question = get_object_or_404(Question, id=question_id)
+                selected_choice = get_object_or_404(Choice, id=selected_choice_id)
+                correct_answer = get_object_or_404(Answer, question=question)
+
+                is_correct = selected_choice == correct_answer.choice
+                if is_correct:
+                    correct_count += 1
+                
+                total_questions += 1 
+                print("total questions",total_questions)
+
+                results.append({
+                    "question": question,
+                    "selected_answer": selected_choice,
+                    "correct_answer": correct_answer.choice,
+                    "is_correct": is_correct
+                })
+
+        # Avoid division by zero
+        score_percentage = (correct_count / total_questions * 100) if total_questions else 0
+        
+        context = {
+            "results": results,
+            "score": score_percentage,
+            "total_questions_attempt":total_questions
+        }
+        print("**************",results)
+        
+        return render(request, 'app/result.html', context)
+
+    return render(request, 'app/result.html', {"result": [], "score": 0})

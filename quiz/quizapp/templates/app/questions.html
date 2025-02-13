@@ -5,9 +5,8 @@
     <h2 class="text-center">Quiz for {{ category.name }}</h2>
 
     {% if questions %}
-    <form id="quiz-form" method="POST" action="{% url 'answer_check' %}">
+    <form id="quiz-form" method="POST" action="{% url 'result_check' %}">
         {% csrf_token %}
-        
         <!-- Total Time Countdown -->
         <div class="mb-4">
             <div id="total-time" class="text-primary font-weight-bold">Total Time: {{ total_time }} seconds</div>
@@ -138,30 +137,4 @@ document.addEventListener("DOMContentLoaded", function() {
     showQuestion(currentIndex);
 });
 </script>
-<script>
-    document.getElementById("submit-btn").addEventListener("click", function() {
-        let formData = new FormData();
-    
-        // Collect all selected answers
-        document.querySelectorAll("input[type=radio]:checked").forEach(input => {
-            formData.append(input.name, input.value);
-        });
-    
-        // Send the data via Fetch API
-        fetch("{% url 'answer_check' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}"  // Ensure CSRF token is included
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Results:", data);
-            alert(`Your Score: ${data.score}/${data.total} (${data.percentage}%)`);
-        })
-        .catch(error => console.error("Error:", error));
-    });
-    </script>
-    
 {% endblock content %}

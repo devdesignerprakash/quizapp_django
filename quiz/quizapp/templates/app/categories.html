@@ -1,17 +1,24 @@
-
 {% extends "common/base.html" %}
 {% load static %}
-{% block title %}categories{% endblock title %}
+{% block title %}Categories{% endblock title %}
 {% block content %}
-<h1>welcome to category</h1>
-<ul>
-    {% for category in categories %}
-        {{category.category_image}}
-        <li>{{ category.name }}</li>
-        <img src={{category.category_image.url}} alt="category-image">
-    {% empty %}
+<div class="container mt-4 text-center">
+    <h1 class="mb-4">Welcome to Quiz!</h1>
+    <div class="row justify-content-center">
+        {% for category in categories %}
+        <div class="col-md-3 col-sm-6 mb-3">
+            <a href="{% url 'questions_page' category_id=category.id %}" class="btn btn-light d-flex flex-column align-items-center p-3 rounded-circle shadow-lg" 
+               style="width: 150px; height: 150px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background-color: white;">
+                <img src="{{ category.category_image.url }}" alt="{{ category.name }}" class="rounded-circle img-fluid"
+                     style="width: 80px; height: 80px; object-fit: cover;">
+                <span class="d-block mt-2 text-dark font-weight-bold">{{ category.name }}</span>
+            </a>
+        </div>
+        {% empty %}
         <p>No categories available.</p>
-    {% endfor %}
-</ul>
-
+        {% endfor %}
+    </div>
+</div>             
 {% endblock content %}
+{% comment %} {% block extra_js %}
+{% endblock extra_js %} {% endcomment %}

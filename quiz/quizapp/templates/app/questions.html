@@ -1,0 +1,139 @@
+{% extends "common/base.html" %}
+{% block title %}Quiz Questions{% endblock title %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Quiz for {{ category.name }}</h2>
+
+    {% if questions %}
+    <!-- Total Time Countdown -->
+    <div class="mb-4">
+        <div id="total-time" class="text-primary font-weight-bold">Total Time: {{ total_time }} seconds</div>
+    </div>
+
+    <div id="question-container">
+        {% for question in questions %}
+        <div class="question-card card p-4 shadow-lg mb-4 {% if forloop.first %}d-block{% else %}d-none{% endif %}" 
+             data-question-number="{{ forloop.counter }}" data-time-limit="{{ question.time_limit }}">
+            <h5 class="mb-3">Question {{ forloop.counter }} of {{ questions|length }}</h5>
+            <p class="lead">{{ question.text }}</p>
+            
+            <!-- Display countdown for each question -->
+            <div id="countdown_{{ forloop.counter }}" class="text-danger font-weight-bold"></div>
+            
+            <form>
+                {% for choice in question.choices.all %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" 
+                           id="choice_{{ choice.id }}" value="{{ choice.id }}">
+                    <label class="form-check-label" for="choice_{{ choice.id }}">
+                        {{ choice.text }}
+                    </label>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+        <button id="next-btn" class="btn btn-primary">Next</button>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center mt-4">
+        <button id="submit-btn" class="btn btn-success d-none">Submit Answers</button>
+    </div>
+
+    {% else %}
+    <p class="text-center">No questions available for this category.</p>
+    {% endif %}
+</div>
+
+<!-- JavaScript for Question Navigation, Time Limit Countdown, and Total Time Countdown -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let questions = document.querySelectorAll(".question-card");
+    let totalQuestions = questions.length;
+    let currentIndex = 0;
+    
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const submitBtn = document.getElementById("submit-btn");
+
+    // Initialize total time
+    let totalTime = {{total_time }};
+    const totalTimeElement = document.getElementById("total-time");
+    totalTimeElement.textContent = `Total Time: ${totalTime} seconds`;
+
+    // Show and start countdown for the current question
+    function startCountdown(timeLimit, counterId) {
+        let countdownElement = document.getElementById(counterId);
+        let timeLeft = timeLimit;
+        countdownElement.textContent = `Time remaining: ${timeLeft} seconds`;
+
+        const countdownInterval = setInterval(function() {
+            timeLeft--;
+            countdownElement.textContent = `Time remaining: ${timeLeft} seconds`;
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                countdownElement.textContent = "Time's up!";
+                // Disable the choices when time's up (or automatically go to next question)
+            }
+        }, 1000);
+    }
+
+    // Start countdown for total time
+    function startTotalTimeCountdown() {
+        const totalTimeInterval = setInterval(function() {
+            totalTime--;
+            totalTimeElement.textContent = `Total Time: ${totalTime} seconds`;
+            if (totalTime <= 0) {
+                clearInterval(totalTimeInterval);
+                totalTimeElement.textContent = "Time's up for the quiz!";
+                // Disable all the question cards and show the submit button
+                nextBtn.disabled = true;
+                prevBtn.disabled = true;
+                submitBtn.classList.remove("d-none");
+            }
+        }, 1000);
+    }
+
+    // Start the total time countdown when the page loads
+    startTotalTimeCountdown();
+
+    function showQuestion(index) {
+        questions.forEach((q, i) => {
+            q.classList.toggle("d-block", i === index);
+            q.classList.toggle("d-none", i !== index);
+            if (i === index) {
+                let timeLimit = q.getAttribute("data-time-limit");
+                let counterId = `countdown_${i + 1}`;
+                startCountdown(timeLimit, counterId);
+            }
+        });
+
+        prevBtn.disabled = index === 0;
+        nextBtn.classList.toggle("d-none", index === totalQuestions - 1);
+        submitBtn.classList.toggle("d-none", index !== totalQuestions - 1);
+    }
+
+    prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            showQuestion(currentIndex);
+        }
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (currentIndex < totalQuestions - 1) {
+            currentIndex++;
+            showQuestion(currentIndex);
+        }
+    });
+
+    showQuestion(currentIndex);
+});
+</script>
+{% endblock content %}

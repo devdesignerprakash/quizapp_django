@@ -18,6 +18,7 @@ class Question(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     text = models.TextField()
     category = models.ForeignKey(Category, related_name='questions',null=True, blank=True, on_delete=models.CASCADE)
+    time_limit= models.IntegerField(default=30)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
